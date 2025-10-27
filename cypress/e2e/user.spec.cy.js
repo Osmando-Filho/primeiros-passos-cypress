@@ -8,7 +8,7 @@ import { faker, faker as fakerBR } from '@faker-js/faker'
 const profissaoBrasileira = fakerBR.person.jobTitle().substring(0, 10)
 const employeeId = fakerBR.number.int(100000)
 const otherId = fakerBR.number.int(100000)
-
+ 
 const loginPage = new LoginPage()
 const dashboardPage = new DashboardPage()
 const menuPage = new MenuPage()
