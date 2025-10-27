@@ -1,94 +1,95 @@
-# 🚀 Primeiros Passos com Cypress
+## 🍊 OrangeHRM E2E Automation (Primeiros Passos com Cypress)
 
-Este repositório serve como um **hub central** para todos os projetos e exemplos de testes de automação desenvolvidos com o framework **Cypress**. O objetivo é documentar e praticar os conceitos fundamentais do Cypress em diferentes aplicações web.
+Este repositório serve como um **hub central** para o projeto de automação de testes End-to-End (E2E) da aplicação **OrangeHRM** (versão Demo). O objetivo principal é aplicar e documentar os conceitos do framework Cypress, seguindo o padrão de design **Page Object Model (POM)**.
+
+### 🎯 Foco dos Testes
+
+* **Login:** Testes de sucesso e falha no acesso ao sistema.
+* **Atualização de Informações Pessoais:** Teste do fluxo de atualização de dados na seção "My Info", utilizando dados dinâmicos.
+
+---
+
+## 🛠️ Tecnologias e Arquitetura
+
+Este projeto foi construído sobre uma arquitetura Page Object Model para garantir organização e manutenibilidade.
+
+### 💻 Tecnologias Utilizadas
+
+* **Cypress:** Framework de testes End-to-End (E2E) em JavaScript.
+* **Node.js:** Ambiente de execução.
+* **Faker.js (@faker-js/faker):** Biblioteca essencial para a geração de dados randômicos (nomes, sobrenomes, IDs, etc.), garantindo que os testes utilizem valores únicos.
+
+### 📐 Arquitetura
+
+O projeto utiliza o **Page Object Model (POM)**:
+* As classes em `cypress/pages` (e.g., `loginPage.js`, `myInfoPage.js`) encapsulam os seletores e métodos de interação de cada página.
+* Os arquivos `.spec.cy.js` apenas orquestram o fluxo de teste, chamando os métodos das Page Objects.
+
+---
 
 ## 📦 Estrutura do Repositório
 
-O repositório está organizado para que cada diretório represente um projeto ou conjunto específico de testes.
+| Caminho | Tipo | Descrição |
+| :--- | :--- | :--- |
+| `cypress/e2e` | Pasta | Contém os arquivos de cenário (`login.spec.cy.js` e `user.spec.cy.js`). |
+| `cypress/pages` | Pasta | **Classes Page Object Model** (POM) para as diferentes telas da aplicação. |
+| `cypress/fixtures/userData.json` | Arquivo | Dados estáticos (usuário/senha) utilizados no login. |
+| `cypress.config.js` | Arquivo | Configurações do Cypress (onde a `baseUrl` é definida, assumindo **`https://opensource-demo.orangehrmlive.com/`**). |
 
-/ ├── cypress/ │ └── e2e/ │ └── <Seu arquivo de teste, ex: orangehrm.cy.js> ├── node_modules/ ├── package.json ├── cypress.config.js └── README.md
-
-
-## 🛠️ Tecnologias Utilizadas
-
-* **Cypress:** Framework de testes End-to-End (E2E) em JavaScript.
-* **Node.js:** Ambiente de execução necessário para instalar as dependências.
+---
 
 ## ⚙️ Instalação e Execução
 
-Para começar a rodar os testes neste repositório, siga os passos abaixo:
+Para rodar os testes, siga os passos abaixo:
 
 ### 1. Pré-requisitos
 
-Certifique-se de ter o **Node.js** (versão 14 ou superior) instalado em sua máquina.
+Certifique-se de ter o **Node.js** e o **npm** instalados.
 
 ### 2. Clonar o Repositório
 
+```bash
 git clone <URL do seu repositório>
 cd primeiros-passos-cypress
-
+```
 ### 3. Instalar Dependências
-Instale o Cypress e as demais dependências do projeto:
+Instale todas as dependências do projeto (incluindo Cypress e Faker.js):
+```bash
 npm install
-
+```
 ### 4. Executar os Testes
 Você pode executar os testes de duas maneiras:
 
 ### A) Modo Interativo (Interface Gráfica)
 Inicie o Test Runner do Cypress para explorar os testes interativamente:
 
-(Bash)
+```Bash
 npx cypress open
-
+```
 ### B) Modo Headless (Terminal)
 Execute todos os testes em modo silencioso (sem interface gráfica) diretamente no terminal:
 
-(Bash)
+```Bash
 npx cypress run
+```
+### 🧪 Visão Geral dos Testes
 
-####🧪 Exemplo de Teste: Orange HRM ####
-O arquivo de teste inicial demonstra fluxos básicos de login, tanto de sucesso quanto de falha, utilizando a aplicação de demonstração Orange HRM.
+Os cenários estão divididos em dois arquivos de teste:
 
-Código Exemplo (Ações Principais)
-describe('Orange HRM - Tests', () => {
-  it('Login - Sucess', () => {
-    // Acessa a página de login
-    cy.visit('https://opensource-demo.orangehrmlive.com/web/index.php/auth/login')
+**login.spec.cy.js**
+Testa o acesso à aplicação utilizando dados do userData.json.
 
-    // Preenche o campo de usuário e senha
-    cy.get("[name='username']").type('Admin')
-    cy.get("[name='password']").type('admin123')
+| Teste |                     Descrição |
+| :--- | :--- |
+| Login Sucess | Login com credenciais válidas e verifica a navegação para o Dashboard. |
+| Login Fail | Login com credenciais inválidas e verifica a mensagem de erro.|
 
-    // Clica no botão de login
-    cy.get("[type='submit']").click()
+**user.spec.cy.js**
+Testa o fluxo de atualização de dados pessoais.
 
-    // Verifica se a navegação foi para o dashboard
-    cy.location('pathname').should('eq', '/web/index.php/dashboard/index')
-    cy.get(".oxd-topbar-header-breadcrumb-module").contains('Dashboard')
-  })
-  it('Login - Fail', () => {
-    cy.visit('https://opensource-demo.orangehrmlive.com/web/index.php/auth/login')
-    
-    // Tenta fazer login com credenciais inválidas
-    cy.get("[name='username']").type('Test')
-    cy.get("[name='password']").type('test')
-    cy.get("[type='submit']").click()
+| Teste |                     Descrição |
+| :--- | :--- |
+| User Info Update - Sucess | "Fluxo completo de login, navegação para 'My Info', preenchimento de campos com dados randômicos (Faker.js) e validação da mensagem de "Successfully Updated"".|
 
-    // Verifica a presença da mensagem de alerta (erro)
-    cy.get("[role='alert']")
-  })
-})
-
-***🎯 O que este teste demonstra: ***
-
-Uso do comando cy.visit() para navegação.
-
-Uso do comando cy.get() com seletores de atributo ([name='...'] e [type='...']) para localizar elementos.
-
-Uso do comando cy.type() para inserção de dados.
-
-Uso de assertions (.should('eq', '...') e .contains()) para verificar o estado da aplicação.
-
-***💡 Contribuições ***
-
-Sinta-se à vontade para adicionar novos exemplos e refatorar os testes existentes para demonstrar outras funcionalidades do Cypress!
+💡 Contribuições
+Sinta-se à vontade para adicionar novos exemplos e refatorar os testes existentes, mantendo o padrão Page Object Model!
